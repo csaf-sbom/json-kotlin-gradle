@@ -126,3 +126,12 @@ signing {
         sign(*publishing.publications.toTypedArray())
     }
 }
+
+gradlePlugin {
+    plugin {
+        create("json-kotlin") {
+            id = "net.pwall.json.json-kotlin"
+            implementationClass = "net.pwall.json.kotlin.codegen.gradle.JSONSchemaCodegenPlugin"
+        }
+    }
+}
