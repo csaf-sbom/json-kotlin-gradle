@@ -3,7 +3,7 @@
  */
 
 group = "net.pwall.json"
-version = "0.107"
+version = "0.108.2"
 description = "Gradle Code Generation Plugin for JSON Schema"
 
 val displayName = "JSON Schema Code Generation Plugin"
@@ -20,6 +20,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 kotlin {
@@ -67,8 +68,7 @@ tasks {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("gradle-plugin"))
-    implementation("net.pwall.json:json-kotlin-schema:0.47")
-    implementation("net.pwall.json:json-kotlin-schema-codegen:0.107")
+    implementation("com.github.csaf-sbom:json-kotlin-schema-codegen:0.108.2")
     implementation("net.pwall.json:jsonutil:5.1")
     implementation("net.pwall.json:json-pointer:2.5")
     testImplementation(kotlin("test"))
