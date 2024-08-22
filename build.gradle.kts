@@ -26,20 +26,20 @@ kotlin {
     jvmToolchain(8)
 }
 
+val sourcesJar: Jar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets["main"].allSource)
+}
+val javadocJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(tasks.dokkaJavadoc)
+    dependsOn(tasks.dokkaJavadoc)
+}
+artifacts {
+    add("archives", sourcesJar)
+    add("archives", javadocJar)
+}
 tasks {
-    val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-    val javadocJar by creating(Jar::class) {
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc)
-        dependsOn(dokkaJavadoc)
-    }
-    artifacts {
-        add("archives", sourcesJar)
-        add("archives", javadocJar)
-    }
     dokkaJavadoc {
         outputDirectory.set(file("$buildDir/javadoc"))
         dokkaSourceSets.configureEach {
@@ -56,6 +56,11 @@ tasks {
     }
     named<Jar>("javadocJar").configure {
         from(dokkaJavadoc)
+    }
+    afterEvaluate {
+        withType(AbstractPublishToMaven::class).configureEach {
+            dependsOn(sourcesJar, javadocJar)
+        }
     }
 }
 
@@ -120,10 +125,15 @@ nexusPublishing {
     }
 }
 
-signing {
+if (!project.hasProperty("publishLocal")) {
     afterEvaluate {
-        useGpgCmd()
-        sign(*publishing.publications.toTypedArray())
+        signing {
+            useGpgCmd()
+            sign(*publishing.publications.toTypedArray())
+        }
+        tasks.withType(Sign::class).configureEach {
+            dependsOn(sourcesJar, javadocJar)
+        }
     }
 }
 
