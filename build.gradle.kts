@@ -128,7 +128,7 @@ signing {
 }
 
 gradlePlugin {
-    plugin {
+    plugins {
         create("json-kotlin") {
             id = "net.pwall.json.json-kotlin"
             implementationClass = "net.pwall.json.kotlin.codegen.gradle.JSONSchemaCodegenPlugin"
